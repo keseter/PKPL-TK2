@@ -3,7 +3,7 @@ const path = require("path");
 const members = require("./data/members");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -15,12 +15,8 @@ app.get("/", (req, res) => {
     groupName: "Kelompok 01",
     courseName: "Project 2: Authentication & Authorization",
     members: members,
-
-    // placeholder supaya nanti mudah dihubungkan ke OAuth
     isLoggedIn: false,
     user: null,
-
-    // placeholder theme supaya nanti mudah diubah oleh anggota yang login
     theme: {
       bgColor: "#f5f7fb",
       textColor: "#1f2937",
@@ -30,6 +26,10 @@ app.get("/", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server berjalan di http://localhost:${PORT}`);
+app.get("/healthz", (req, res) => {
+  res.status(200).send("OK");
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server berjalan di port ${PORT}`);
 });
