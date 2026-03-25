@@ -26,10 +26,6 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/healthz", (req, res) => {
-  res.status(200).send("OK");
-});
-
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
   console.log(`Server berjalan di port ${PORT}`);
 });
