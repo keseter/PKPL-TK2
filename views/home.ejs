@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= groupName %> - Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body style="--bg-color:<%= theme.bgColor %>;--text-color:<%= theme.textColor %>;--card-color:<%= theme.cardColor %>;--accent-color:<%= theme.accentColor %>;--font-family:<%= theme.fontFamily %>;">
+  <%- include('partials/header') %>
+  <%- include('partials/toast') %>
+
+  <main class="container page-stack">
+    <section class="hero-panel card">
+      <div>
+        <p class="eyebrow">Curated E-Commerce</p>
+        <h1>Belanja yang jelas, cepat, dan nyaman.</h1>
+        <p class="muted">
+          Jelajahi produk, buka detail item untuk membaca review, lalu checkout saat siap.
+          Login Google tersedia untuk personalisasi akun, dan akun anggota kelompok dapat mengubah tampilan website.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/products">Lihat Produk</a>
+          <a class="btn btn-light" href="/account">Masuk Google</a>
+        </div>
+      </div>
+      <div class="hero-metrics">
+        <div>
+          <strong><%= heroProducts.length %></strong>
+          <span>Featured</span>
+        </div>
+        <div>
+          <strong><%= cart.totalItems %></strong>
+          <span>Di Keranjang</span>
+        </div>
+        <div>
+          <strong><%= auth.role.toUpperCase() %></strong>
+          <span>Role Saat Ini</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>Featured Products</h2>
+        <a href="/products">Lihat Semua</a>
+      </div>
+      <div class="product-grid">
+        <% heroProducts.forEach((product) => { %>
+          <article class="product-card">
+            <span class="pill"><%= product.badge %></span>
+            <h3><a href="/products/<%= product.id %>"><%= product.name %></a></h3>
+            <p class="muted"><%= product.category %></p>
+            <p class="price">Rp <%= new Intl.NumberFormat('id-ID').format(product.price) %></p>
+            <p class="meta">
+              <%= product.averageRating ? `${product.averageRating}/5` : 'Belum ada rating' %>
+              · <%= new Intl.NumberFormat('id-ID').format(product.reviewCount) %> ulasan
+              · Stok <%= product.stock %>
+            </p>
+          </article>
+        <% }) %>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

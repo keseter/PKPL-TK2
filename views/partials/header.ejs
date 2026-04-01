@@ -1,0 +1,19 @@
+<header class="site-header">
+  <div class="container nav-wrap">
+    <a href="/" class="brand">
+      <span class="brand-kicker">Marketplace</span>
+      <strong><%= groupName %></strong>
+    </a>
+
+    <nav class="nav-links" aria-label="Main Navigation">
+      <% nav.links.forEach((link) => { %>
+        <a href="<%= link.href %>" class="<%= nav.current === link.key ? 'active' : '' %>">
+          <%= link.label %>
+          <% if (typeof link.count === 'number' && link.count > 0) { %>
+            <span class="nav-badge"><%= link.count %></span>
+          <% } %>
+        </a>
+      <% }) %>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= groupName %> - <%= product.name %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body style="--bg-color:<%= theme.bgColor %>;--text-color:<%= theme.textColor %>;--card-color:<%= theme.cardColor %>;--accent-color:<%= theme.accentColor %>;--font-family:<%= theme.fontFamily %>;">
+  <%- include('partials/header') %>
+  <%- include('partials/toast') %>
+
+  <main class="container page-stack">
+    <section class="card detail-grid">
+      <div>
+        <a class="back-link" href="/products">← Kembali ke Products</a>
+        <h1><%= product.name %></h1>
+        <p class="muted"><%= product.category %> · <%= product.badge %></p>
+        <p class="price">Rp <%= new Intl.NumberFormat('id-ID').format(product.price) %></p>
+        <p class="meta">
+          <%= product.averageRating ? `${product.averageRating}/5` : 'Belum ada rating' %>
+          · <%= new Intl.NumberFormat('id-ID').format(product.reviewCount) %> ulasan
+          · Stok <%= product.stock %>
+        </p>
+
+        <form class="inline-form" action="/cart/add" method="post">
+          <input type="hidden" name="productId" value="<%= product.id %>" />
+          <input type="number" min="1" max="<%= Math.max(product.stock, 1) %>" name="quantity" value="1" />
+          <button class="btn btn-primary" type="submit" <%= product.stock < 1 ? 'disabled' : '' %>>
+            <%= product.stock < 1 ? 'Stok Habis' : 'Tambah ke Keranjang' %>
+          </button>
+        </form>
+      </div>
+
+      <% if (auth.isAdmin) { %>
+        <aside class="admin-box">
+          <h3>Admin Controls</h3>
+          <form action="/admin/products/<%= product.id %>/stock" method="post" class="stock-inline">
+            <label for="stock">Update Stock</label>
+            <input id="stock" type="number" name="stock" min="0" value="<%= product.stock %>" required />
+            <button class="btn btn-light" type="submit">Simpan</button>
+          </form>
+        </aside>
+      <% } %>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>Reviews</h2>
+        <span class="muted"><%= product.reviewCount %> ulasan</span>
+      </div>
+
+      <% if (auth.isLoggedIn) { %>
+        <form class="review-form" action="/products/<%= product.id %>/reviews" method="post">
+          <label>
+            Rating
+            <select name="rating" required>
+              <option value="5">5</option>
+              <option value="4">4</option>
+              <option value="3">3</option>
+              <option value="2">2</option>
+              <option value="1">1</option>
+            </select>
+          </label>
+          <label class="review-comment">
+            Komentar
+            <textarea name="comment" rows="3" minlength="6" required></textarea>
+          </label>
+          <button class="btn btn-primary" type="submit">Kirim Review</button>
+        </form>
+      <% } else { %>
+        <p class="muted">Login Google untuk menulis review.</p>
+      <% } %>
+
+      <div class="review-list">
+        <% if (product.reviews.length > 0) { %>
+          <% product.reviews.forEach((review) => { %>
+            <article class="review-card">
+              <div class="review-head">
+                <strong><%= review.userName %></strong>
+                <span><%= review.rating %>/5</span>
+              </div>
+              <p><%= review.comment %></p>
+              <% if (auth.isAdmin) { %>
+                <form action="/admin/reviews/<%= review.id %>/delete" method="post">
+                  <button type="submit" class="link-danger">Hapus Review</button>
+                </form>
+              <% } %>
+            </article>
+          <% }) %>
+        <% } else { %>
+          <p class="muted">Belum ada review untuk produk ini.</p>
+        <% } %>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

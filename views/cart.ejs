@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= groupName %> - Cart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body style="--bg-color:<%= theme.bgColor %>;--text-color:<%= theme.textColor %>;--card-color:<%= theme.cardColor %>;--accent-color:<%= theme.accentColor %>;--font-family:<%= theme.fontFamily %>;">
+  <%- include('partials/header') %>
+  <%- include('partials/toast') %>
+
+  <main class="container page-stack">
+    <section class="card">
+      <div class="section-head">
+        <h1>Cart</h1>
+        <span class="muted"><%= cart.totalItems %> item</span>
+      </div>
+
+      <% if (cart.items.length > 0) { %>
+        <div class="cart-list">
+          <% cart.items.forEach((item) => { %>
+            <article class="cart-row">
+              <div>
+                <h3><%= item.name %></h3>
+                <p class="muted">Rp <%= new Intl.NumberFormat('id-ID').format(item.price) %> · Stok <%= item.stock %></p>
+              </div>
+              <div class="row-actions">
+                <form action="/cart/update" method="post" class="qty-form">
+                  <input type="hidden" name="productId" value="<%= item.productId %>" />
+                  <button type="submit" name="action" value="dec">-</button>
+                  <span><%= item.quantity %></span>
+                  <button type="submit" name="action" value="inc">+</button>
+                </form>
+                <strong>Rp <%= new Intl.NumberFormat('id-ID').format(item.lineTotal) %></strong>
+                <form action="/cart/remove" method="post">
+                  <input type="hidden" name="productId" value="<%= item.productId %>" />
+                  <button type="submit" class="link-danger">Hapus</button>
+                </form>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+
+        <div class="checkout-box">
+          <p>Subtotal: <strong>Rp <%= new Intl.NumberFormat('id-ID').format(cart.subtotal) %></strong></p>
+          <form action="/cart/checkout" method="post">
+            <button class="btn btn-primary" type="submit">Checkout</button>
+          </form>
+        </div>
+      <% } else { %>
+        <p class="muted">Keranjang masih kosong.</p>
+        <a class="btn btn-light" href="/products">Belanja Sekarang</a>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

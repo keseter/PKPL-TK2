@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= groupName %> - Products</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body style="--bg-color:<%= theme.bgColor %>;--text-color:<%= theme.textColor %>;--card-color:<%= theme.cardColor %>;--accent-color:<%= theme.accentColor %>;--font-family:<%= theme.fontFamily %>;">
+  <%- include('partials/header') %>
+  <%- include('partials/toast') %>
+
+  <main class="container page-stack">
+    <section class="card">
+      <div class="section-head">
+        <h1>Products</h1>
+        <span class="muted"><%= products.length %> item tersedia</span>
+      </div>
+      <div class="product-grid">
+        <% products.forEach((product) => { %>
+          <article class="product-card">
+            <div class="card-top">
+              <span class="pill"><%= product.badge %></span>
+              <small><%= product.category %></small>
+            </div>
+            <h3><a href="/products/<%= product.id %>"><%= product.name %></a></h3>
+            <p class="price">Rp <%= new Intl.NumberFormat('id-ID').format(product.price) %></p>
+            <p class="meta">
+              <%= product.averageRating ? `${product.averageRating}/5` : 'Belum ada rating' %>
+              · <%= new Intl.NumberFormat('id-ID').format(product.reviewCount) %> ulasan
+              · Stok <%= product.stock %>
+            </p>
+            <div class="card-actions">
+              <a class="btn btn-light" href="/products/<%= product.id %>">Lihat Detail</a>
+              <form action="/cart/add" method="post">
+                <input type="hidden" name="productId" value="<%= product.id %>" />
+                <input type="hidden" name="quantity" value="1" />
+                <button class="btn btn-primary" type="submit" <%= product.stock < 1 ? 'disabled' : '' %>>
+                  <%= product.stock < 1 ? 'Stok Habis' : 'Tambah' %>
+                </button>
+              </form>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
